@@ -97,6 +97,7 @@ router.post("/", async (req, res) => {
         ? res.status(201).json(post)
         : errorMaker(404, "A user with that id does not exist", res);
     } catch (err) {
+      console.log(err);
       errorMaker(500, "Unable to reach server", res);
     }
   }
