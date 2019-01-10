@@ -43,9 +43,8 @@ router.get("/:id", async (req, res) => {
     const user = await users.get(id);
     if (!user) {
       return errorMaker(404, "A user with that ID does not exist", res);
-    } else {
-      res.status(200).json(user);
     }
+    res.status(200).json(user);
   } catch (err) {
     errorMaker(500, "Unable to reach server", res);
   }
@@ -66,11 +65,9 @@ router.post("/", capitalizeName, async (req, res) => {
     const newUser = await users.insert({ name });
     res.status(201).json(newUser);
   } catch (err) {
-    if ((err.errno = 19)) {
-      errorMaker(404, "A user with that name already exists", res);
-    } else {
-      errorMaker(500, "Unable to reach server", res);
-    }
+    return (err.errno = 19
+      ? errorMaker(400, "A user with that name already exists", res)
+      : errorMaker(500, "Unable to reach server", res));
   }
 });
 
@@ -87,11 +84,9 @@ router.put("/:id", capitalizeName, async (req, res) => {
       if (updated) res.json(changes);
     }
   } catch (err) {
-    if ((err.errno = 19)) {
-      errorMaker(400, "A user with that name already exists", res);
-    } else {
-      errorMaker(500, "Unable to reach server", res);
-    }
+    return (err.errno = 19
+      ? errorMaker(400, "A user with that name already exists", res)
+      : errorMaker(500, "Unable to reach server", res));
   }
 });
 
